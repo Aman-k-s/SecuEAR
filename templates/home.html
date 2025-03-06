@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<div class="container">
+    <h1>
+        <span class="sec">Secu</span><span class="ear">EAR</span>
+    </h1>
+    
+    <input type="file" id="fileInput">
+    <button onclick="fakeUpload()">Upload</button>
+    <p id="result">Rakshit bhai backend bnao...</p>
+</div>
+<img src="{% static 'images/bg1.jpg' %}" alt="Background Image" style="padding: 0px; margin: 0px; width: 100wh; height: 100wh;">
+
+{% endblock %}
