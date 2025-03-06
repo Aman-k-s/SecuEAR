@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import authenticate_ear, verify_image
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path("authenticate/", authenticate_ear, name="authenticate_ear"),
+    path("verify/", verify_image, name="verify_image")
 ]
