@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-gray-200">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md text-center">
+        <h1 class="text-3xl font-bold mb-6">
+            <span class="text-blue-400">Secu</span><span class="text-green-400">EAR</span>
+        </h1>
+
+        <!-- Enrollment Details -->
+        <p class="text-gray-300"><strong>Enrollment ID:</strong> {{ enrol.enrol_id }}</p>
+        <p class="text-gray-300"><strong>Transaction Ref:</strong> {{ enrol.transaction_ref }}</p>
+        <p class="text-gray-300"><strong>Confidence Level:</strong> {{ enrol.confidence }}</p>
+
+        <!-- Authentication Result -->
+        {% if enrol.confidence >= 0.7 %}
+            <p class="mt-4 text-lg font-semibold text-green-400">✔ Authentication Successful!</p>
+        {% else %}
+            <p class="mt-4 text-lg font-semibold text-red-400">✖ Authentication Failed</p>
+        {% endif %}
+
+        <!-- Back to Home Button -->
+        <a href="{% url 'home' %}"
+           class="mt-6 inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow">
+            Go Back
+        </a>
+    </div>
+</div>
+{% endblock %}

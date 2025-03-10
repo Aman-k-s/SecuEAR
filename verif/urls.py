@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import authenticate_ear, verify_image
+from .views import upload_file, home, landing
 
 urlpatterns = [
-    path("authenticate/", authenticate_ear, name="authenticate_ear"),
-    path("verify/", verify_image, name="verify_image")
+    path('', home, name='home'),
+    path('upload/', upload_file, name='upload_file'),
+    path('landing/<str:enrol_id>', landing, name='landing'),
 ]
