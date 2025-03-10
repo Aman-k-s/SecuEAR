@@ -2,29 +2,15 @@ function uploadFile() {
     let fileInput = document.getElementById("fileInput");
     let resultText = document.getElementById("result");
 
-    // Check if a file is selected
     if (fileInput.files.length === 0) {
-        resultText.innerText = "Please select a file before uploading.";
-        resultText.classList.remove("text-green-400");
-        resultText.classList.add("text-red-400");
-        return;
-    }
-
-    let file = fileInput.files[0];
-
-    // Check if the file has a .ply extension
-    if (!file.name.toLowerCase().endsWith(".ply")) {
-        resultText.innerText = "Only .ply files are allowed!";
-        resultText.classList.remove("text-green-400");
-        resultText.classList.add("text-red-400");
-        fileInput.value = "";  // Reset file input
+        resultText.textContent = "Please choose a file first.";
         return;
     }
 
     let formData = new FormData();
-    formData.append("fileInput", file);
+    formData.append("fileInput", fileInput.files[0]);
 
-    fetch("/upload/", {  // Backend route to handle file upload
+    fetch("/upload/", {
         method: "POST",
         body: formData,
         headers: {
@@ -34,18 +20,13 @@ function uploadFile() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            resultText.innerText = "File uploaded successfully!";
-            resultText.classList.remove("text-red-400");
-            resultText.classList.add("text-green-400");
+            document.getElementById("temp_file_path").value = data.temp_file_path;  // Store path
+            resultText.textContent = "File uploaded successfully!";
         } else {
-            resultText.innerText = "Upload failed: " + data.error;
-            resultText.classList.remove("text-green-400");
-            resultText.classList.add("text-red-400");
+            resultText.textContent = data.error;
         }
     })
     .catch(error => {
-        resultText.innerText = "An error occurred while uploading.";
-        resultText.classList.remove("text-green-400");
-        resultText.classList.add("text-red-400");
+        resultText.textContent = "Upload failed!";
     });
 }

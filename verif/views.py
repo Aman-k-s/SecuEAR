@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.timezone import now
-from .models import Enrol
+from .models import Enrol, User
 
 
 def upload_file(request):
@@ -16,7 +16,10 @@ def upload_file(request):
         if not file.name.lower().endswith(".ply"):
             return JsonResponse({"success": False, "error": "Only .ply files are allowed!"}, status=400)
 
-        temp_path = f"temp/{file.name}"
+        # Generate a 10-character hex filename
+        new_filename = f"{uuid.uuid4().hex[:10]}.ply"
+        temp_path = f"depth_maps/{new_filename}"
+        
         file_path = default_storage.save(temp_path, ContentFile(file.read()))
 
         return JsonResponse({"success": True, "temp_file_path": file_path})
@@ -28,28 +31,21 @@ def home(request):
     if request.method == "POST":
         user_id = request.POST.get("userID")
         transaction_ref = request.POST.get("transactionRef")
-        temp_file_path = request.POST.get("temp_file_path")
+        file_path = request.POST.get("temp_file_path")
 
-        if not user_id or not transaction_ref or not temp_file_path:
-            return redirect("/")
+        user_instance=User.objects.get(user_id=user_id)
 
-        new_filename = f"{uuid.uuid4().hex}.ply"
-        new_file_path = f"depth_maps/{new_filename}"
-        
-        temp_full_path = os.path.join(default_storage.location, temp_file_path)
-        new_full_path = os.path.join(default_storage.location, new_file_path)
+        if not user_id or not transaction_ref or not file_path:
+            return JsonResponse({"success": False, "error": "Missing required fields"}, status=400)
 
-        if os.path.exists(temp_full_path):
-            os.rename(temp_full_path, new_full_path)
-        else:
-            return redirect("landing", status="failed")
+
 
         enrol = Enrol.objects.create(
-            enrol_id=uuid.uuid4().hex,
-            user_id=user_id,
+            enrol_id=uuid.uuid4().hex, 
+            user_code=user_instance,
             transaction_ref=transaction_ref,
             uploaded_at=now(),
-            depth_map=new_file_path,
+            depth_map=file_path,
             confidence=None,
         )
 
