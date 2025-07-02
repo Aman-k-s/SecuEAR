@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SecuEAR Authentication</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <h1>SecuEAR - 3D Ear Based Authentication</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+      <label>Upload File (.ply or .png):</label><br />
+      <input type="file" name="file" required /><br /><br />
+
+      <label>Choose Action:</label><br />
+      <select name="action">
+        <option value="upload">Upload & Match (.ply)</option>
+        <option value="register">Register (depth map)</option>
+        <option value="authenticate">Authenticate (depth map)</option></select
+      ><br /><br />
+
+      <input
+        type="text"
+        name="user_id"
+        placeholder="User ID (only for register)"
+      /><br /><br />
+
+      <button type="submit">Submit</button>
+    </form>
+
+    {% if result %}
+    <div class="result-box">
+      <h2>Result:</h2>
+      <p>{{ result }}</p>
+    </div>
+    {% endif %}
+  </body>
+</html>
