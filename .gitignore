@@ -1,0 +1,6 @@
+# python cache files
+__pycache__/
+*.pyc
+
+# cache inside migration files
+**/migrations/__pycache__/
