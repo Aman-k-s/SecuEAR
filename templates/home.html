@@ -1,7 +1,23 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    Welcome {{user.username}}
-    
+<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+    <div style="padding: 2.5rem 3rem;
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 14px;
+                text-align: center;
+                color: #c9d1d9;">
 
+        <h1 style="margin: 0 0 1rem 0; font-size: 2rem; font-weight: 600;">
+            Welcome, {{ user.username }} 👋
+        </h1>
+        
+        <p style="margin: 0; font-size: 1rem; color: #8b949e;">
+            You are now logged in to <span style="color:#58a6ff; font-weight:500;">SecuEAR</span>.
+        </p>
+    </div>
+</div>
 {% endblock %}

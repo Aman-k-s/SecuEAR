@@ -4,11 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecuEAR</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0d1117; 
+            color: #c9d1d9;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar a {
+            color: #c9d1d9;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .navbar a:hover {
+            color: #58a6ff;
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+    </style>
 </head>
 <body>
-    {% include 'navbar.html'   %}
-    {% block body %}
-        
-    {% endblock %}
+    <nav class="navbar glass">
+        {% include 'navbar.html' %}
+    </nav>
+
+    <main class="content">
+        {% block body %}
+        {% endblock %}
+    </main>
 </body>
 </html>

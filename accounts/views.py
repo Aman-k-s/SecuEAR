@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect(reverse('home'))
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -27,6 +29,8 @@ def logout_view(request):
     return redirect('login')
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect(reverse('home'))
     if request.method == 'POST':
         form = RegisterForm(request.POST)
 

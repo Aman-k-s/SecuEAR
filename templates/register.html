@@ -1,9 +1,63 @@
 {% extends 'base.html' %}
 {% block body %}
-    
-<form method = 'post'>
-    {% csrf_token %}
-    {{form.as_p}}
-    <button type = 'submit'> Register</button>
-</form>
+<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+    <form method="post"
+          style="width: 380px; padding: 2rem;
+                 background: rgba(255, 255, 255, 0.05);
+                 backdrop-filter: blur(12px);
+                 -webkit-backdrop-filter: blur(12px);
+                 border: 1px solid rgba(255, 255, 255, 0.1);
+                 border-radius: 12px;
+                 color: #c9d1d9;">
+
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div style="margin-bottom: 1rem;">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <div style="color: #f85149; font-size: 0.85rem; margin-top: 0.25rem;">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+            <div style="background: rgba(248, 81, 73, 0.1); 
+                        border: 1px solid #f85149; 
+                        color: #f85149; 
+                        padding: 0.75rem; 
+                        border-radius: 6px; 
+                        margin-bottom: 1rem; 
+                        font-size: 0.9rem;">
+                {% for error in form.non_field_errors %}
+                    <p style="margin: 0;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button type="submit"
+                style="width: 100%; padding: 0.6rem;
+                       background-color: #1f6feb;
+                       border: none; border-radius: 6px;
+                       color: #fff; font-weight: 600;
+                       cursor: pointer; transition: background 0.2s;">
+            Register
+        </button>
+
+        <p style="margin-top: 1rem; font-size: 0.9rem; text-align: center; color: #8b949e;">
+            Already have an account? 
+            <a href="{% url 'login' %}" 
+               style="color: #58a6ff; text-decoration: none; font-weight: 500;"
+               onmouseover="this.style.textDecoration='underline'" 
+               onmouseout="this.style.textDecoration='none'">
+               Login
+            </a>
+        </p>
+    </form>
+</div>
 {% endblock %}
