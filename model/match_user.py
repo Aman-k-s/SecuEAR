@@ -10,7 +10,7 @@ def extract_hog(image):
     return features
 
 # Function to call from backend
-def match_user(image_path, model_path="svm_model_hog.pkl"):
+def match_user(image_path, model_path="model/svm_model_hog.pkl"):
     # Load trained model and label encoder
     model, label_encoder = joblib.load(model_path)
 

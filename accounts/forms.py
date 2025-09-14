@@ -1,24 +1,33 @@
 from django import forms
 from accounts.models import User
 from django.contrib.auth import authenticate
+from model.match_user import match_user
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=64)
-    password = forms.CharField(widget=forms.PasswordInput)
+    scan = forms.FileField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None  # initialize here
 
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get('username')
-        password = cleaned_data.get('password')
+        scan = cleaned_data.get('scan')
 
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if not user:
-                raise forms.ValidationError('Invalid username or password')
-            self.user = user
+        if username and scan:
+            confidence = match_user(scan)
 
+            if confidence < 70:
+                raise forms.ValidationError(f"Authentication failed (confidence: {confidence})")
+            
+            self.user = User.objects.filter(username=username).first()
+            self.confidence = round(confidence, 2)
+
+            if not self.user:
+                raise forms.ValidationError("User does not exist")
         return cleaned_data
-
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(

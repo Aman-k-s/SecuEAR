@@ -6,21 +6,22 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def login_view(request):
+
     if request.user.is_authenticated:
         return redirect(reverse('home'))
+    
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        form = LoginForm(request.POST, request.FILES)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+            user = form.user
+            # confidence = form.confidence
 
-            user = authenticate(request, username = username, password = password)
-
-            if user:
-                login(request, user)
-                return redirect(reverse('home'))
+            login(request, user)
+        
+            return redirect(reverse('home')) 
     else:
         form = LoginForm()
+
     context = {'form':form}
     return render(request, 'login.html', context)
 
