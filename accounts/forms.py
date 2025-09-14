@@ -17,7 +17,7 @@ class LoginForm(forms.Form):
         scan = cleaned_data.get('scan')
 
         if username and scan:
-            confidence = match_user(scan)
+            confidence = match_user(image_path=scan)
 
             if confidence < 70:
                 raise forms.ValidationError(f"Authentication failed (confidence: {confidence})")
