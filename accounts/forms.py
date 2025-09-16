@@ -1,33 +1,12 @@
 from django import forms
 from accounts.models import User
-from django.contrib.auth import authenticate
-from model.match_user import match_user
+import numpy as np
+import cv2 
 
+# forms.py
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=64)
     scan = forms.FileField()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.user = None  # initialize here
-
-    def clean(self):
-        cleaned_data = super().clean()
-        username = cleaned_data.get('username')
-        scan = cleaned_data.get('scan')
-
-        if username and scan:
-            confidence = match_user(image_path=scan)
-
-            if confidence < 70:
-                raise forms.ValidationError(f"Authentication failed (confidence: {confidence})")
-            
-            self.user = User.objects.filter(username=username).first()
-            self.confidence = round(confidence, 2)
-
-            if not self.user:
-                raise forms.ValidationError("User does not exist")
-        return cleaned_data
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(

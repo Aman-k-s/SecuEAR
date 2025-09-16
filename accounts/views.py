@@ -3,27 +3,62 @@ from .forms import LoginForm, RegisterForm
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+import cv2
+import numpy as np
+from model.match_user import match_user
+from .models import Login, User
 
-# Create your views here.
+def validate_user(ply_file_path, user_profile_data):
+    return match_user(image_path=ply_file_path)[1]
+
 def login_view(request):
-
     if request.user.is_authenticated:
         return redirect(reverse('home'))
     
     if request.method == 'POST':
         form = LoginForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.user
-            # confidence = form.confidence
+            username = form.cleaned_data.get('username')
+            uploaded_file = form.cleaned_data.get('scan')
 
-            login(request, user)
-        
-            return redirect(reverse('home')) 
+            try:
+                user_to_login = User.objects.get(username=username)
+            except User.DoesNotExist:
+                form.add_error('username', 'User does not exist.')
+                return render(request, 'login.html', {'form': form})
+            
+            try:
+                login_scan = Login(scan_input=uploaded_file, User = user_to_login)
+                login_scan.save()
+                
+                ply_file_path = login_scan.scan_input.path
+                
+                # Step 3: Use the file path to run your 3D authentication logic.
+                # Your `validate_user` function must now accept a file path.
+                confidence = validate_user(ply_file_path, user_profile_data=user_to_login)
+
+                if confidence < 70: # Use your desired confidence threshold
+                    form.add_error('scan', f"Authentication failed (confidence: {confidence:.2f})")
+                    # Delete the saved file on failure to save space
+                    login_scan.delete() 
+                    return render(request, 'login.html', {'form': form})
+                
+                # Step 4: Authentication is successful. The file is already saved. Log the user in.
+                login(request, user_to_login)
+                return redirect(reverse('home'))
+            
+            except Exception as e:
+                # Catch any unexpected errors, like file I/O or 3D processing errors.
+                form.add_error('scan', f"An error occurred: {e}")
+                # Clean up the saved file if an error occurs after saving
+                if 'login_scan' in locals():
+                    login_scan.delete()
+                return render(request, 'login.html', {'form': form})
     else:
         form = LoginForm()
 
-    context = {'form':form}
-    return render(request, 'login.html', context)
+    return render(request, 'login.html', {'form': form})
+
 
 def logout_view(request):
     logout(request)
