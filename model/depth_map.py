@@ -6,7 +6,7 @@ import os
 def generate_depth_map(filename, width=224, height=224):
     input_path = os.path.join("ply_scans", filename)
     output_filename = filename.replace(".ply", ".png")
-    output_path = os.path.join("depth_maps", output_filename)
+    output_path = os.path.join("/media/depth_map", output_filename)
 
     mesh = o3d.io.read_triangle_mesh(input_path)
     if not mesh.has_triangles():
@@ -47,6 +47,7 @@ def generate_depth_map(filename, width=224, height=224):
     print(f"Saved: {output_path}")
 
     vis.destroy_window()
+    return output_path
 
 if __name__ == "__main__":
     os.makedirs("depth_maps", exist_ok=True)
