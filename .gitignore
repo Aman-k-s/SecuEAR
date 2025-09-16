@@ -4,3 +4,6 @@ __pycache__/
 
 # cache inside migration files
 **/migrations/__pycache__/
+
+/media/input/*
+!/media/input/.gitkeep
