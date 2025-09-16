@@ -3,13 +3,13 @@ from .forms import LoginForm, RegisterForm
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-import cv2
-import numpy as np
 from model.match_user import match_user
+from model.depth_map import generate_depth_map
 from .models import Login, User
 
 def validate_user(ply_file_path, user_profile_data):
-    return match_user(image_path=ply_file_path)[1]
+    depth_map = generate_depth_map(ply_file_path)
+    return match_user(image_path=depth_map)[1]
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -37,7 +37,7 @@ def login_view(request):
                 # Your `validate_user` function must now accept a file path.
                 confidence = validate_user(ply_file_path, user_profile_data=user_to_login)
 
-                if confidence < 70: # Use your desired confidence threshold
+                if confidence < 0.70: # Use your desired confidence threshold
                     form.add_error('scan', f"Authentication failed (confidence: {confidence:.2f})")
                     # Delete the saved file on failure to save space
                     login_scan.delete() 
